@@ -1,62 +1,118 @@
-// @ts-check
+// @ts-nocheck
 import '@agoric/zoe/exported.js';
 import { AmountMath } from '@agoric/ertp';
 import { Far } from '@agoric/marshal';
+import { cosmos } from './cosmos';
+import { osmosis } from './osmosis';
+
+const chains = harden({
+  osmosis: {
+    keyword: 'Osmo',
+    denom: 'uosmo',
+    decimalPlaces: 6,
+  },
+  agoric: {
+    channel: 'channel-10',
+  },
+});
+
+const DEFAULT_AMOUNT_MATH_KIND = 'nat';
+const DEFAULT_PROTOCOL = 'ics27-1';
 
 /**
- * This is a very simple contract that creates a new issuer and mints payments
- * from it, in order to give an example of how that can be done.  This contract
- * sends new tokens to anyone who has an invitation.
+ * Get the denomination combined with the network address.
  *
- * The expectation is that most contracts that want to do something similar
- * would use the ability to mint new payments internally rather than sharing
- * that ability widely as this one does.
- *
- * To pay others in tokens, the creator of the instance can make
- * invitations for them, which when used to make an offer, will payout
- * the specified amount of tokens.
- *
+ * @param {ERef<Endpoint | undefined>} endpointP network connection address
+ * @param {Denom} denom denomination
+ * @param {TransferProtocol} [protocol=DEFAULT_PROTOCOL] the protocol to use
+ * @returns {Promise<string>} denomination URI scoped to endpoint
+ */
+ async function makeDenomUri(endpointP, denom, protocol = DEFAULT_PROTOCOL) {
+  switch (protocol) {
+    case 'ics20-1': {
+      return E.when(endpointP, endpoint => {
+        if (!endpoint) {
+          // Unqualified remote denomination.
+          return `${protocol}:${denom}`;
+        }
+
+        // Deconstruct IBC endpoints to use ICS-20 conventions.
+        // IBC endpoint: `/ibc-hop/gaia/ibc-port/transfer/ordered/ics20-1/ibc-channel/chtedite`
+        const pairs = parseMultiaddr(endpoint);
+
+        const protoPort = pairs.find(([proto]) => proto === 'ibc-port');
+        assert(protoPort, details`Cannot find IBC port in ${endpoint}`);
+
+        const protoChannel = pairs.find(([proto]) => proto === 'ibc-channel');
+        assert(protoChannel, details`Cannot find IBC channel in ${endpoint}`);
+
+        const port = protoPort[1];
+        const channel = protoChannel[1];
+        return `${protocol}:${port}/${channel}/${denom}`;
+      });
+    }
+    case 'ics27-1': {
+      return E.when(endpointP, endpoint => {
+        if (!endpoint) {
+          // Unqualified remote denomination.
+          return `${protocol}:${denom}`;
+        }
+
+        // Deconstruct IBC endpoints to use ICS-20 conventions.
+        // IBC endpoint: `/ibc-hop/gaia/ibc-port/transfer/ordered/ics20-1/ibc-channel/chtedite`
+        const pairs = parseMultiaddr(endpoint);
+
+        const protoPort = pairs.find(([proto]) => proto === 'ibc-port');
+        assert(protoPort, details`Cannot find IBC port in ${endpoint}`);
+
+        const protoChannel = pairs.find(([proto]) => proto === 'ibc-channel');
+        assert(protoChannel, details`Cannot find IBC channel in ${endpoint}`);
+
+        const port = protoPort[1];
+        const channel = protoChannel[1];
+        return `${protocol}:${port}/${channel}/${denom}`;
+      });
+    }
+    default:
+      throw assert.fail(details`Invalid denomination protocol ${protocol}`);
+  }
+}
+
+/**
+ * This is a contract that aggregates swaps and liquidity across
+ * the Cosmos ecosystem (starting with Gravity DEX & Osmosis)
+ * utilizing interchain accounts - ics-27
  * @type {ContractStartFn}
  */
 const start = async (zcf) => {
-  // Create the internal token mint for a fungible digital asset. Note
-  // that 'Tokens' is both the keyword and the allegedName.
-  const zcfMint = await zcf.makeZCFMint('Tokens');
-  // AWAIT
 
-  // Now that ZCF has saved the issuer, brand, and local amountMath, they
-  // can be accessed synchronously.
-  const { issuer, brand } = zcfMint.getIssuerRecord();
+  /**
+   * Get the best price for the token pair from all
+   * decentralized exchanges/liquidity providers
+   * @param {ContractFacet} zcf
+   * @returns {map}
+  */
+   export const getAggregatePrice =(zcf) => {
+    try {
+    } catch (err) {
+      throw err;
+    }
+  }
 
-  /** @type {OfferHandler} */
-  const mintPayment = (seat) => {
-    const amount = AmountMath.make(brand, 1000n);
-    // Synchronously mint and allocate amount to seat.
-    zcfMint.mintGains(harden({ Token: amount }), seat);
-    // Exit the seat so that the user gets a payout.
-    seat.exit();
-    // Since the user is getting the payout through Zoe, we can
-    // return anything here. Let's return some helpful instructions.
-    return 'Offer completed. You should receive a payment from Zoe';
-  };
-
-  const creatorFacet = Far('creatorFacet', {
-    // The creator of the instance can send invitations to anyone
-    // they wish to.
-    makeInvitation: () => zcf.makeInvitation(mintPayment, 'mint a payment'),
-    getTokenIssuer: () => issuer,
-  });
-
-  const publicFacet = Far('publicFacet', {
-    // Make the token issuer public. Note that only the mint can
-    // make new digital assets. The issuer is ok to make public.
-    getTokenIssuer: () => issuer,
-  });
-
-  // Return the creatorFacet to the creator, so they can make
-  // invitations for others to get payments of tokens. Publish the
-  // publicFacet.
-  return harden({ creatorFacet, publicFacet });
+  /**
+   * Swap exact amount in for the minimum amount specified,
+   * at the best price from all liquidity providers
+   * @param {ContractFacet} zcf
+   * @returns {string}
+  */
+  export const aggregateSwap =(zcf) => {
+    try {
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+  return harden({ publicFacet });
 };
 
 harden(start);
