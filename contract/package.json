@@ -33,7 +33,8 @@
     "@agoric/marshal": "*",
     "@agoric/notifier": "*",
     "@agoric/store": "*",
-    "@agoric/zoe": "*"
+    "@agoric/zoe": "*",
+    "osmojs": "^0.4.56"
   },
   "ava": {
     "files": [
