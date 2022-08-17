@@ -1,6 +1,6 @@
 import '@agoric/zoe/exported.js';
 import { Far } from '@agoric/marshal';
-import { osmosis } from './osmosis.js';
+import { osmosis } from './chains/osmosis.js/index.js';
 
 const chains = harden({
   osmosis: {
