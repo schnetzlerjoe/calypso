@@ -46,3 +46,19 @@ cd ~/calypso/contract
 
 agoric deploy ./deploy.js
 ```
+
+## App Store dApps At Launch
+* Osmosis - Dex (Swap + LP Management)
+* Juno - Junoswap (Swap + LP Management)
+* Secret - Secretswap (Swap + LP Management)
+* Staking Management in all IBC Chains (Autocompound)
+
+## Future dApps
+* IBC <-> EVM Bridging
+* Stargaze and NFT Aggregation/Management
+
+## Future Potential dApps
+* Cosmos Hub?
+* Terra and Terra dApps
+* Akash + Dev Tools for Deploying Web3 Cloud
+* Lending Aggregation
