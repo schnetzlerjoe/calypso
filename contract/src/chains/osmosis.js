@@ -1,34 +1,32 @@
-import * as gamm from 'osmojs/main/proto/osmosis/gamm/v1beta1/tx.registry';
-import { coin } from '@cosmjs/amino';
-const { swapExactAmountIn } = gamm.MessageComposer.withTypeUrl;
+import { osmosis } from 'osmojs';
+import { MsgSwapExactAmountIn } from 'osmojs/types/proto/osmosis/gamm/v1beta1/tx';
+const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageComposer.withTypeUrl;
 
 /**
- * Using the ICA Agoric contract to perform a swap on Osmosis
+ * Using the ICA Agoric contract, perform a swap on Osmosis
  *
- * @param {string} hostConnectionId
+ * @param {Connection} connection
+ * @param {MsgSwapExactAmountIn} value
  * @returns {Promise<String>}
  */
- export const osmoSwap = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
+ export const osmoSwap = async (connection, value) => {
 
-    const msg = swapExactAmountIn({
-      sender,
-      routes,
-      tokenIn: coin(amount, denom),
-      tokenOutMinAmount
-    });
+    const msg = swapExactAmountIn(value);
 
-    return connection;
+    const ret = await connection.send(JSON.stringify(value));
+
+    return ret;
 };
 
 /**
- * Using the ICA Agoric contract to add liquidty into an Osmosis pool
+ * Using the ICA Agoric contract, add liquidity into an Osmosis pool
  *
  * @param {string} hostConnectionId
  * @returns {Promise<String>}
  */
- export const lpLiquidity = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
+ export const joinLP = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
-  const msg = swapExactAmountIn({
+  const msg = joinPool({
     sender,
     routes,
     tokenIn: coin(amount, denom),
@@ -37,9 +35,3 @@ const { swapExactAmountIn } = gamm.MessageComposer.withTypeUrl;
 
   return connection;
 };
-
-/** @type {ICAProtocol} */
-export const osmosis = Far('Calypso Protocol', {
-    swap: osmoSwap,
-    addLiquidity: lpLiquidity,
-});
