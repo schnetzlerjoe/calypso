@@ -1,5 +1,9 @@
+import { MsgDelegate, MsgUndelegate, MsgBeginRedelegate } from 'cosmjs-types/cosmos/staking/v1beta1/tx'
+import { MsgWithdrawDelegatorReward } from 'cosmjs-types/cosmos/distribution/v1beta1/tx'
+
 /**
- * Using the ICA Agoric contract, stake assets
+ * Using the ICA Agoric contract, stake assets. This is a generic Cosmos message usable
+ * across all Cosmos chains that implement it.
  *
  * @param {Connection} connection
  * @param {MsgSwapExactAmountIn} value
@@ -7,14 +11,10 @@
  */
 export const cosmosStake = async (connection, value) => {
 
-    const message = MsgSwapExactAmountIn.fromPartial({
-        sender,
-        routes,
-        tokenIn,
-        tokenOutMinAmount
+    const message = MsgDelegate.fromPartial({
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
+    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmos.staking.v1beta1.MsgDelegate", value: MsgDelegate.encode(message).finish()})
 
     const packet = await E(instance.publicFacet).makeICAPacket([msg]);
 
@@ -24,7 +24,8 @@ export const cosmosStake = async (connection, value) => {
 };
 
 /**
- * Using the ICA Agoric contract, unstake assets
+ * Using the ICA Agoric contract, unstake assets. This is a generic Cosmos message usable
+ * across all Cosmos chains that implement it.
  *
  * @param {Connection} connection
  * @param {MsgSwapExactAmountIn} value
@@ -32,14 +33,10 @@ export const cosmosStake = async (connection, value) => {
  */
  export const cosmosUnstake = async (connection, value) => {
 
-    const message = MsgSwapExactAmountIn.fromPartial({
-        sender,
-        routes,
-        tokenIn,
-        tokenOutMinAmount
+    const message = MsgUndelegate.fromPartial({
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
+    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmos.staking.v1beta1.MsgUndelegate", value: MsgUndelegate.encode(message).finish()})
 
     const packet = await E(instance.publicFacet).makeICAPacket([msg]);
 
@@ -49,7 +46,8 @@ export const cosmosStake = async (connection, value) => {
 };
 
 /**
- * Using the ICA Agoric contract, redelegate staked assets
+ * Using the ICA Agoric contract, redelegate staked assets. This is a generic Cosmos message usable
+ * across all Cosmos chains that implement it.
  *
  * @param {Connection} connection
  * @param {MsgSwapExactAmountIn} value
@@ -57,14 +55,10 @@ export const cosmosStake = async (connection, value) => {
  */
  export const cosmosRedelegate = async (connection, value) => {
 
-    const message = MsgSwapExactAmountIn.fromPartial({
-        sender,
-        routes,
-        tokenIn,
-        tokenOutMinAmount
+    const message = MsgBeginRedelegate.fromPartial({
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
+    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmos.staking.v1beta1.MsgBeginRedelegate", value: MsgBeginRedelegate.encode(message).finish()})
 
     const packet = await E(instance.publicFacet).makeICAPacket([msg]);
 
@@ -74,7 +68,8 @@ export const cosmosStake = async (connection, value) => {
 };
 
 /**
- * Using the ICA Agoric contract, claim your staking reward
+ * Using the ICA Agoric contract, claim your staking reward. This is a generic Cosmos message usable
+ * across all Cosmos chains that implement it.
  *
  * @param {Connection} connection
  * @param {MsgSwapExactAmountIn} value
@@ -82,14 +77,10 @@ export const cosmosStake = async (connection, value) => {
  */
  export const cosmosClaimReward = async (connection, value) => {
 
-    const message = MsgSwapExactAmountIn.fromPartial({
-        sender,
-        routes,
-        tokenIn,
-        tokenOutMinAmount
+    const message = MsgWithdrawDelegatorReward.fromPartial({
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
+    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward", value: MsgWithdrawDelegatorReward.encode(message).finish()})
 
     const packet = await E(instance.publicFacet).makeICAPacket([msg]);
 
