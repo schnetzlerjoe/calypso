@@ -51,10 +51,11 @@ agoric deploy ./deploy.js
 * Osmosis - Dex (Swap + LP Management)
 * Juno - Junoswap (Swap + LP Management)
 * Secret - Secretswap (Swap + LP Management)
-* Staking Management in all IBC Chains (Autocompound)
+* Staking Management in all IBC Chains
 
 ## Future dApps
-* IBC <-> EVM Bridging
+* IBC <-> EVM Bridging + Cross Chain Interaction (Axelar)
+* IBC <-> Solana Bridging + Cross Chain Interaction
 * Stargaze and NFT Aggregation/Management
 
 ## Future Potential dApps
