@@ -52,12 +52,12 @@ agoric deploy ./deploy.js
 * Juno - Junoswap (Swap + LP Management)
 * Secret - Secretswap (Swap + LP Management)
 * Staking Management in all IBC Chains
-* Cross Chain Arbitrage - Utilize Calypso supported dex's to provide arb liquidity for price efficiency. Receive Arb returns.
 
 ## Future dApps
 * IBC <-> EVM Bridging + Cross Chain Interaction (Axelar)
 * IBC <-> Solana Bridging + Cross Chain Interaction
 * Stargaze and NFT Aggregation/Management
+* Cross Chain Arbitrage - Utilize Calypso supported dex's to provide arb liquidity for price efficiency. Receive Arb returns.
 
 ## Future Potential dApps
 * Cosmos Hub?

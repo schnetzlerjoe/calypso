@@ -1,6 +1,4 @@
-import { osmosis } from 'osmojs';
-import { MsgSwapExactAmountIn } from 'osmojs/types/proto/osmosis/gamm/v1beta1/tx';
-const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageComposer.withTypeUrl;
+import { MsgSwapExactAmountIn, MsgExitPool, MsgJoinPool } from 'osmojs/types/proto/osmosis/gamm/v1beta1/tx';
 
 /**
  * Using the ICA Agoric contract, perform a swap on Osmosis
@@ -11,11 +9,20 @@ const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageCo
  */
  export const osmoSwap = async (connection, value) => {
 
-    const msg = swapExactAmountIn(value);
+  const message = MsgSwapExactAmountIn.fromPartial({
+    sender,
+    routes,
+    tokenIn,
+    tokenOutMinAmount
+  })
 
-    const ret = await connection.send(JSON.stringify(value));
+  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
 
-    return ret;
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };
 
 /**
@@ -26,14 +33,20 @@ const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageCo
  */
  export const osmoJoinLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
-  const msg = joinPool({
+  const message = MsgJoinPool.fromPartial({
     sender,
-    routes,
-    tokenIn: coin(amount, denom),
-    tokenOutMinAmount
-  });
+    poolId,
+    shareOutAmount,
+    tokenInMaxs
+  })
 
-  return connection;
+  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgJoinPool", value: MsgJoinPool.encode(message).finish()})
+
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };
 
 /**
@@ -44,12 +57,18 @@ const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageCo
  */
  export const osmoRemoveLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
-  const msg = removePool({
+  const message = MsgExitPool.fromPartial({
     sender,
-    routes,
-    tokenIn: coin(amount, denom),
-    tokenOutMinAmount
-  });
+    poolId,
+    shareInAmount,
+    tokenOutMins
+  })
 
-  return connection;
+  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgExitPool", value: MsgExitPool.encode(message).finish()})
+
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };
