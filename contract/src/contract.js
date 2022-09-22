@@ -1,57 +1,36 @@
 import '@agoric/zoe/exported.js';
 import { Far } from '@agoric/marshal';
-import { osmosis } from './chains/osmosis.js/index.js';
-
-const chains = harden({
-  osmosis: {
-    keyword: 'Osmo',
-    denom: 'uosmo',
-    decimalPlaces: 6,
-    swap: () => osmosis.swap(),
-    addLiquidity: () => osmosis.addLiquidity()
-  },
-});
 
 /**
- * This is a contract that aggregates swaps and liquidity across
- * the Cosmos ecosystem (starting with Osmosis)
- * utilizing interchain accounts - ics-27
+ * This is the Calypso contract that allows for the creation of controller accounts
+ * on all chains supported (Axelar + IBC Chains) which are controlled by the users Agoric wallet.
+ * They can then interact with these wallets via Calypso aggregated messages to manage their defi
+ * and protocols across 60+ chains.
  * @type {ContractStartFn}
  * @param {ContractFacet} zcf
  * @param {Object} chains
  */
-const start = async (zcf, chains) => {
+const start = async (zcf) => {
 
-  /**
-   * Swap exact amount in for the minimum amount specified,
-   * at the best price from all liquidity providers
-   * @param {ContractFacet} zcf
-   * @param {Object} chains
-   * @returns {string}
-  */
-  const agSwap = (zcf, chains) => {
-    try {
-      const res = chains.osmosis.swap()
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  /**
-   * Provide liquidity in a pool on the dex provided in the pool specified
-   * @param {ContractFacet} zcf
-   * @returns {string}
-  */
-   const provideLiquidity = (zcf) => {
-    try {
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  const publicFacet = Far('publicFacet', {
+  const calypso = {
     // Public faucet for anyone to call
-    swap: (/** @type {Msg} */ msg) => agSwap(msg),
+    swap: (/** @type {MsgSwap} */ msg) => agSwap(msg),
+    addLP: (/** @type {MsgAddLP} */ msg) => agAddLP(msg),
+    removeLP: (/** @type {MsgRemoveLP} */ msg) => agRemoveLP(msg),
+    stake: (/** @type {MsgStake} */ msg) => stake(msg),
+    unstake: (/** @type {MsgUnstake} */ msg) => unstake(msg),
+    restake: (/** @type {MsgRestake} */ msg) => restake(msg),
+  }
+
+  const openCalypsoAccount = async () => {
+    return calypso
+  }
+
+  // Public faucet for anyone to call
+  const publicFacet = Far('publicFacet', {
+    // Creates a Calypso account and then returns the Calypso object to interact with all the accounts
+    // Calypso created across all chains Calypso supports.
+    openCalypsoAccount: (/** @type {MsgOpenAccount} */ msg) => openCalypsoAccount(msg)
   });
   
   return harden({ publicFacet });

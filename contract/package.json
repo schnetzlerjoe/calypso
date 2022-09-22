@@ -34,7 +34,9 @@
     "@agoric/notifier": "*",
     "@agoric/store": "*",
     "@agoric/zoe": "*",
-    "osmojs": "^0.4.56"
+    "osmojs": "^0.4.56",
+    "secretjs": "^1.4.0",
+    "@cosmjs/cosmwasm-stargate": "^0.29.0"
   },
   "ava": {
     "files": [

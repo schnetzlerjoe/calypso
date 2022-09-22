@@ -24,9 +24,27 @@ const { swapExactAmountIn, joinPool, exitPool } = osmosis.gamm.v1beta1.MessageCo
  * @param {string} hostConnectionId
  * @returns {Promise<String>}
  */
- export const joinLP = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
+ export const osmoJoinLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
   const msg = joinPool({
+    sender,
+    routes,
+    tokenIn: coin(amount, denom),
+    tokenOutMinAmount
+  });
+
+  return connection;
+};
+
+/**
+ * Using the ICA Agoric contract, remove liquidity from an Osmosis pool
+ *
+ * @param {string} hostConnectionId
+ * @returns {Promise<String>}
+ */
+ export const osmoRemoveLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
+
+  const msg = removePool({
     sender,
     routes,
     tokenIn: coin(amount, denom),
