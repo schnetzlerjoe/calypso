@@ -54,6 +54,7 @@ agoric deploy ./deploy.js
 * Staking Management in all IBC Chains
 
 ## Future dApps
+* Decentralized Tx Indexing - View/Manage Your Tx's
 * IBC <-> EVM Bridging + Cross Chain Interaction (Axelar)
 * IBC <-> Solana Bridging + Cross Chain Interaction
 * Stargaze and NFT Aggregation/Management
@@ -64,3 +65,4 @@ agoric deploy ./deploy.js
 * Terra and Terra dApps
 * Akash + Dev Tools for Deploying Web3 Cloud
 * Lending Aggregation
+* Messaging/Inbox
