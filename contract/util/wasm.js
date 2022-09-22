@@ -13,7 +13,6 @@ export const makeExecuteMessage = ({
           sender: senderAddress,
           contract: contractAddress,
           msg: toUtf8(JSON.stringify(message)),
-          funds: funds || [],
         }),
     }
 

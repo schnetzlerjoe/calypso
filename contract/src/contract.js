@@ -28,9 +28,12 @@ const start = async (zcf) => {
 
   // Public faucet for anyone to call
   const publicFacet = Far('publicFacet', {
-    // Creates a Calypso account and then returns the Calypso object to interact with all the accounts
-    // Calypso created across all chains Calypso supports.
-    openCalypsoAccount: (/** @type {MsgOpenAccount} */ msg) => openCalypsoAccount(msg)
+    /**
+     * Creates a Calypso account and then returns the Calypso object to interact with all the accounts
+     * Calypso created across all chains Calypso supports.
+     * @param {MsgOpenAccount} msg
+     */
+    openCalypsoAccount: (msg) => openCalypsoAccount(msg)
   });
   
   return harden({ publicFacet });
