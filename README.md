@@ -1,6 +1,6 @@
-# Calypso - The Blockchain OS
+# Calypso - The Decentralized Web3 Portal
 
-This repo holds the Agoric smart contracts for Calypso, one wallet and desktop app to manage your blockchain protocols across 50+ chains, all decentrally.
+This repo holds the Agoric smart contracts for Calypso, one wallet and dApp to manage your blockchain protocols across 60+ chains, all decentrally.
 
 ## Getting Started on Devnet
 You will need to have Agoric SDK, NodeJS and Rust installed to get started.
