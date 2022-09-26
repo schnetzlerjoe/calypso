@@ -21,7 +21,7 @@ const start = async (zcf) => {
      * Initializes Calypso and then return the Calypso object to interact with the Calypso protocol with.
      * @returns {Promise<CalypsoResponse>}
      */
-    initCalypso: async () => await startCalypso()
+    initCalypso: async (/** @type {ZoeService} */ zoe, /** @type {NameAdmin} */ nameHub) => await startCalypso(zoe, nameHub)
   });
   
   return harden({ publicFacet });

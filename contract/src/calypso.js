@@ -2,6 +2,7 @@ import '@agoric/zoe/exported.js';
 import { Far } from '@agoric/marshal';
 import { defineKind } from '@agoric/vat-data';
 import { agSwap } from './swap';
+import { E } from '@endo/eventual-send';
 
 /**
  * Creates the Calypso accounts store for the contract.
@@ -76,10 +77,13 @@ const createAccountsStore = async (instanceIca, handler) => {
 /**
  * Initializes Calypso and then returns the Calypso object to interact with Calypso for the account.
  * 
- * @param {MsgOpenAccount} msg
+ * @param {ZoeService} zoe
+ * @param {NameAdmin} nameAdmin
  * @returns {Promise<CalypsoResponse>}
  */
-export const startCalypso = async (msg) => {
+export const startCalypso = async (zoe, nameAdmin) => {
+
+    const nameHub = E(nameAdmin).readonly()
 
     // start the ica instance
     const interaccounts = await E(nameHub).lookup("interaccounts");
