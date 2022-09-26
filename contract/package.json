@@ -2,7 +2,7 @@
   "name": "calypso-contract",
   "version": "0.1.0",
   "private": true,
-  "description": "Contract for the Agoric Dapp",
+  "description": "Contract for Calypso, Web3 Portal",
   "type": "module",
   "scripts": {
     "build": "exit 0",
@@ -14,30 +14,38 @@
     "lint-check-jessie": "eslint -c '.eslintrc-jessie.js' '**/*.{js,jsx}'"
   },
   "devDependencies": {
-    "agoric": "*",
+    "ava": "^3.13.0",
     "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-jessie": "^0.0.6",
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^2.1.2",
-    "ava": "^3.13.0"
+    "prettier": "^2.1.2"
   },
   "dependencies": {
-    "@agoric/bundle-source": "*",
-    "@agoric/assert": "*",
-    "@agoric/ertp": "*",
-    "@agoric/eventual-send": "*",
-    "@agoric/install-ses": "*",
-    "@agoric/marshal": "*",
-    "@agoric/notifier": "*",
-    "@agoric/store": "*",
-    "@agoric/zoe": "*",
+    "@agoric/assert": "dev",
+    "@agoric/babel-standalone": "^7.17.7",
+    "@agoric/ertp": "dev",
+    "@agoric/notifier": "dev",
+    "@agoric/store": "dev",
+    "@agoric/swingset-vat": "dev",
+    "@agoric/zoe": "dev",
+    "@cosmjs/encoding": "^0.28.4",
+    "@endo/base64": "^0.2.25",
+    "@endo/bundle-source": "^2.2.0",
+    "@endo/eventual-send": "^0.15.3",
+    "@endo/init": "^0.5.41",
+    "@endo/marshal": "^0.6.7",
+    "@endo/promise-kit": "^0.2.42",
+    "cosmjs-types": "agoric-labs/cosmjs-types#Agoric-built",
     "osmojs": "^0.4.56",
     "secretjs": "^1.4.0",
     "@cosmjs/cosmwasm-stargate": "^0.29.0",
     "@cosmjs/stargate": "^0.29.0"
+  },
+  "resolutions": {
+    "**/protobufjs": "agoric-labs/protobuf.js#Agoric-built"
   },
   "ava": {
     "files": [
@@ -48,14 +56,14 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Agoric/agoric"
+    "url": "git+https://github.com/pitalco/calypso"
   },
   "author": "Agoric",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/Agoric/agoric/issues"
+    "url": "https://github.com/pitalco/calypso/issues"
   },
-  "homepage": "https://github.com/Agoric/agoric#readme",
+  "homepage": "https://github.com/pitalco/calypso#readme",
   "eslintConfig": {
     "extends": [
       "@agoric"

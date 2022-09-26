@@ -18,13 +18,10 @@ const start = async (zcf) => {
   // Public facet for anyone to call
   const publicFacet = Far('publicFacet', {
     /**
-     * Initializes a Calypso account if one does not exist for the Agoric account or reinitializes
-     * one if one already exists within store. Returns the Calypso object to interact with all 
-     * the accounts Calypso created for this Agoric account across all protocols Calypso supports.
-     * @param {MsgOpenAccount} msg
+     * Initializes Calypso and then return the Calypso object to interact with the Calypso protocol with.
      * @returns {Promise<CalypsoResponse>}
      */
-    initCalypso: async (msg) => await startCalypso(msg)
+    initCalypso: async () => await startCalypso()
   });
   
   return harden({ publicFacet });

@@ -23,7 +23,9 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.21.4",
     "eslint-plugin-react-hooks": "^4.1.2",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "patch-package": "latest",
+    "postinstall-postinstall": "latest"
   },
   "scripts": {
     "preinstall": "node -e \"process.env.AGORIC_INSTALL && process.exit(0); console.warn('please use: agoric install . For details, see https://agoric.com/documentation/'); process.exit(1)\"",
@@ -31,11 +33,16 @@
     "lint-check": "yarn workspaces run lint-check",
     "test": "yarn workspaces run test",
     "integration-test": "yarn ava",
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces run build",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "agoric": "*",
     "eslint-plugin-eslint-comments": "^3.1.2"
+  },
+  "resolutions": {
+    "**/protobufjs": "agoric-labs/protobuf.js#Agoric-built",
+    "**/cosmjs-types": "agoric-labs/cosmjs-types#Agoric-built"
   },
   "ava": {
     "files": [

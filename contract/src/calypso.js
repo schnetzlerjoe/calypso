@@ -2,7 +2,6 @@ import '@agoric/zoe/exported.js';
 import { Far } from '@agoric/marshal';
 import { defineKind } from '@agoric/vat-data';
 import { agSwap } from './swap';
-import { openAccount, addProtocolAccount } from './account';
 
 /**
  * Creates the Calypso accounts store for the contract.
@@ -10,8 +9,8 @@ import { openAccount, addProtocolAccount } from './account';
  * @param {Instance} instanceIca
  * @param {ConnectionHandler} handler
  * @returns {PromiseKindFacets<{
-    open: ({ state }: MsgOpenAccount, msg: MsgOpenAccount) => Promise<string>;
-    add: ({ state }: MsgAddAccount, msg: MsgAddAccount) => Promise<string>;
+    open: ({ state }, msg: MsgOpenAccount) => Promise<string>;
+    add: ({ state }, msg: MsgAddAccount) => Promise<string>;
     getAccount: ({ state }: {
         state: any;
     }, agoricAccount: any) => any;
@@ -131,7 +130,7 @@ export const startCalypso = async (msg) => {
          * @returns {Promise<String>}
          */
          async openCalypsoAccount (msg) {
-            const ret = await openAccount(msg, accounts)
+            const ret = await accounts.open(msg)
             return ret
         },
         /**
@@ -142,7 +141,7 @@ export const startCalypso = async (msg) => {
          * @returns {Promise<String>}
          */
          async addConnectionToCalypsoAccount (msg) {
-            const ret = await addProtocolAccount(msg, accounts)
+            const ret = await accounts.add(msg)
             return ret
         },
         /**
