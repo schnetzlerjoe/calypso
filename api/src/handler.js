@@ -3,7 +3,7 @@ import { E } from '@agoric/eventual-send';
 import { makeWebSocketHandler } from './lib-http.js';
 
 const spawnHandler = (
-  { creatorFacet, board, http, invitationIssuer },
+  { creatorFacet, wallet, board, http, invitationIssuer },
   _invitationMaker,
 ) =>
   makeWebSocketHandler(http, (send, _meta) =>
