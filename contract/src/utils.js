@@ -16,13 +16,17 @@ import { E } from '@endo/eventual-send';
     return versionJSON.address
 }
 
-export const makeFakeMyAddressNameAdmin = async () => {
+/**
+ * 
+ * @param {String} i
+ */
+export const makeFakeMyAddressNameAdmin = async (i) => {
     const { nameHub, nameAdmin: rawMyAddressNameAdmin } = makeNameHubKit();
     return Far('fakeMyAddressNameAdmin', {
       ...nameHub,
       ...rawMyAddressNameAdmin,
       getMyAddress() {
-        return 'agoric1test1';
+        return 'agoric1test' + i;
       },
     });
   }

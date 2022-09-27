@@ -9,11 +9,35 @@ import  { MsgExecuteContract } from 'secretjs';
  */
  export const secretSwap = async (connection, value) => {
 
-    const msg = swapExactAmountIn(value);
+  const swapMessage = {
+      swap: {
+          offer_asset: {
+            info: {
+                native_token: {
+                    denom: ""
+                }
+            },
+            amount: 9
+        },
+        belief_price: decimal,
+        max_spread: decimal2,
+        to: address,
+      },
+  }
 
-    const ret = await connection.send(JSON.stringify(value));
+  const message = MsgExecuteContract.fromPartial({
+      sender: senderAddress,
+      contract: contractAddress,
+      msg: toUtf8(JSON.stringify(swapMessage)),
+  })
 
-    return ret;
+  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };
 
 /**
@@ -24,14 +48,26 @@ import  { MsgExecuteContract } from 'secretjs';
  */
  export const secretJoinLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
-  const msg = joinPool({
-    sender,
-    routes,
-    tokenIn: coin(amount, denom),
-    tokenOutMinAmount
-  });
+  const addLiquidityMessage = {
+      provide_liquidity: {
+        assets: `${tokenAAmount}`,
+        slippage_tolerance: `${maxTokenBAmount}`,
+      },
+  }
 
-  return connection;
+  const message = MsgExecuteContract.fromPartial({
+      sender: senderAddress,
+      contract: contractAddress,
+      msg: toUtf8(JSON.stringify(addLiquidityMessage)),
+  })
+
+  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };
 
 /**
@@ -42,12 +78,25 @@ import  { MsgExecuteContract } from 'secretjs';
  */
  export const secretRemoveLp = async (sender, routes, tokenInAmount, tokeninDenom, slippage) => {
 
-  const msg = removePool({
-    sender,
-    routes,
-    tokenIn: coin(amount, denom),
-    tokenOutMinAmount
-  });
+  const removeLiquidityMessage = {
+      receive: {
+        from: `${tokenAmount}`,
+        msg: `${0}`,
+        amount: `${0}`,
+      },
+  }
 
-  return connection;
+  const message = MsgExecuteContract.fromPartial({
+      sender: senderAddress,
+      contract: contractAddress,
+      msg: toUtf8(JSON.stringify(removeLiquidityMessage)),
+  })
+
+  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+
+  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+
+  const ret = await connection.send(JSON.stringify(packet));
+
+  return ret;
 };

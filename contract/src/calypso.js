@@ -1,37 +1,30 @@
 import '@agoric/zoe/exported.js';
 import { Far } from '@agoric/marshal';
-import { defineKind } from '@agoric/vat-data';
+import { defineKind, makeScalarBigMapStore } from '@agoric/vat-data';
 import { agSwap } from './swap';
 import { E } from '@endo/eventual-send';
 
-/**
- * Creates the Calypso accounts store for the contract.
- * 
- * @param {Instance} instanceIca
- * @param {ConnectionHandler} handler
- * @returns {PromiseKindFacets<{
-    open: ({ state }, msg: MsgOpenAccount) => Promise<string>;
-    add: ({ state }, msg: MsgAddAccount) => Promise<string>;
-    getAccount: ({ state }: {
-        state: any;
-    }, agoricAccount: any) => any;
-    count: ({ state }: {
-        state: any;
-    }) => any;
-}>}
- */
 const createAccountsStore = async (instanceIca, handler) => {
 
+    const accountRegistry = makeScalarBigMapStore('caccounts');
+
     // Create the store behavior and stores for Calypso accounts
-    const initAccounts = () => ({ accounts: {} })
+    const initAccounts = () => ({ accounts: harden([]) })
     const accountsBehavior = {
         /**
          * Open a new Calypso account.
          * 
          * @param {MsgOpenAccount} msg
-         * @returns {Promise<String>}
+         * @returns {Promise<Object>}
          */
-        open: async ({state}, msg) => {
+        open: async ({state, self}, msg) => {
+            // check to see if a calypso account already exists for this account
+            const found = self.getAccount(msg.account)
+            if (found != null) { throw Error(`Calypso account ${msg.account} already exists`) }
+            // perform add operation
+            let copyData = Object.keys(state.accounts).map((item) => 
+                Object.assign({}, state.accounts[item])
+            )
             const accountObj = { "osmosis": null, "juno": null, "secret": null, "cosmos": null }
             // Create a connection object for osmosis
             accountObj.osmosis = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.osmosis.agoric, msg.osmosis.counterparty)
@@ -42,7 +35,10 @@ const createAccountsStore = async (instanceIca, handler) => {
             // Create a connection object for cosmos
             accountObj.cosmos = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.cosmos.agoric, msg.cosmos.counterparty)
             // Set the new Calypso account with the connections
-            state.accounts[msg.account] = accountObj
+            accountObj["address"] = msg.account
+            const data = [...copyData, accountObj]
+            state.accounts = harden(data)
+            return accountObj
         },
         /**
          * Add a new chain connection to a Calypso account.
@@ -50,28 +46,50 @@ const createAccountsStore = async (instanceIca, handler) => {
          * @param {MsgAddAccount} msg
          * @returns {Promise<String>}
          */
-        add: async ({state}, msg) => {
-            const connectionObj = {}
-            connectionObj[msg.chainName] = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
-            state.accounts[msg.account] = {...connectionObj, ...state.accounts[msg.account]}
+        add: async ({state, self}, msg) => {
+            // check to see if a calypso account already exists for this account
+            const found = self.getAccount(msg.account)
+            if (found == null) { throw Error(`Calypso account ${msg.account} does not exist`) }
+            // perform logic to add connection
+            let copyData = Object.keys(state.accounts).map((item) => 
+                Object.assign({}, state.accounts[item])
+            )
+            for (let i = 0; i < copyData.length; i++) {
+                if (copyData[i].address == msg.account) {
+                    copyData[i][msg.chainName] = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
+                    state.accounts = harden(copyData)
+                    return copyData[i]
+                }
+            }
+            return null
         },
         // Get the Calypso account by looking up via Agoric address and getting the connections
         // associated with it.
         getAccount: ({state}, agoricAccount) => {
-            return state.accounts[agoricAccount]
+            for (let i = 0; i < state.accounts.length; i++) {
+                if (state.accounts[i].address == agoricAccount) {
+                    return state.accounts[i]
+                }
+            }
+            return null
         },
         // Gets the amount of opened Calypso accounts in the store
         count: ({state}) => {
-            return state.accounts.keys().length
+            return state.accounts.length
         },
     }
+
+    const finishAccount = ({ state, self }) => {
+        accountRegistry.init(state.name, self);
+    };
+
     // Create the virtual object store
-    const makeAccountsStore = defineKind('accounts', initAccounts, accountsBehavior);
+    const makeAccountsStore = defineKind('accounts', initAccounts, accountsBehavior, { finish: finishAccount });
 
     // Initialize the virtual object store
     const accounts = makeAccountsStore('calypso');
 
-    return Far('accounts', accounts)
+    return accounts
 }
 
 /**
@@ -93,7 +111,7 @@ export const startCalypso = async (zoe, nameAdmin) => {
     /** @type {ConnectionHandler} */
     const connectionHandlerICA = Far('handler', {
         onOpen: async (c) => { 
-          console.log("Connection opened: ", c) 
+          //console.log("Connection opened: ", c) 
         },
         onReceive: async (c, p) => {
           console.log('Received packet: ', p);
@@ -105,7 +123,7 @@ export const startCalypso = async (zoe, nameAdmin) => {
         }
     });
 
-    const accounts = await createAccountsStore(msg, instanceIca, connectionHandlerICA);
+    const accounts = await createAccountsStore(instanceIca, connectionHandlerICA);
 
     return Far('calypso', {
         /**
@@ -141,7 +159,6 @@ export const startCalypso = async (zoe, nameAdmin) => {
          * Add a new connection to the Calypso account for the Agoric account specified.
          *
          * @param {MsgAddAccount} msg
-         * @param {ConnectionPair} connections
          * @returns {Promise<String>}
          */
          async addConnectionToCalypsoAccount (msg) {
