@@ -4,10 +4,10 @@ import  { MsgExecuteContract } from 'secretjs';
  * Using the ICA Agoric contract, perform a swap on Secretswap
  *
  * @param {Connection} connection
- * @param {MsgSwapExactAmountIn} value
+ * @param {MsgSecretswapSwap} msg
  * @returns {Promise<String>}
  */
- export const secretSwap = async (connection, value) => {
+ export const secretSwap = async (connection, msg) => {
 
   const swapMessage = {
       swap: {
@@ -31,9 +31,9 @@ import  { MsgExecuteContract } from 'secretjs';
       msg: toUtf8(JSON.stringify(swapMessage)),
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 
@@ -61,9 +61,9 @@ import  { MsgExecuteContract } from 'secretjs';
       msg: toUtf8(JSON.stringify(addLiquidityMessage)),
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 
@@ -92,9 +92,9 @@ import  { MsgExecuteContract } from 'secretjs';
       msg: toUtf8(JSON.stringify(removeLiquidityMessage)),
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 

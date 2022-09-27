@@ -47,7 +47,7 @@ cd ~/calypso/contract
 agoric deploy ./deploy.js
 ```
 
-## App Store dApps At Launch
+## App Store dApps At MVP
 * Osmosis - Dex (Swap + LP Management)
 * Juno - Junoswap (Swap + LP Management)
 * Secret - Secretswap (Swap + LP Management)

@@ -49,52 +49,73 @@
  * @typedef {object} MsgSwap
  * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {Number} minAmountOut The minimum amount of the token being swapped out.
+ * @property {object} msg The protocol msg to run.
  */
 
 /**
  * @typedef {object} MsgAddLP
- * @property {string} protocol The protocol ID to run the add liquidity msg on.
+ * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {string} poolId The pool id of the pool to add liquidity to.
+ * @property {object} msg The protocol msg to run.
  */
 
 /**
  * @typedef {object} MsgRemoveLP
- * @property {string} protocol The protocol ID to run the add liquidity msg on.
+ * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {string} poolId The pool id of the pool to remove liquidity from.
+ * @property {object} msg The protocol msg to run.
  */
 
 /**
  * @typedef {object} MsgStake
- * @property {string} protocol The protocol ID to run the add liquidity msg on.
+ * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {string} poolId The pool id of the pool to remove liquidity from.
+ * @property {object} msg The protocol msg to run.
  */
 
 /**
  * @typedef {object} MsgUnstake
- * @property {string} protocol The protocol ID to run the add liquidity msg on.
+ * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {string} poolId The pool id of the pool to remove liquidity from.
+ * @property {object} msg The protocol msg to run.
  */
 
 /**
  * @typedef {object} MsgRestake
- * @property {string} protocol The protocol ID to run the add liquidity msg on.
+ * @property {string} chain The protocol ID to run the swap on.
  * @property {object} account The accounts store object for the Calypso account to perform swap for.
- * @property {string} tokenInDenom The token denom of the token being swapped.
- * @property {Number} tokenInAmount The token amount of the token being swapped.
- * @property {string} poolId The pool id of the pool to remove liquidity from.
+ * @property {object} msg The protocol msg to run.
+ */
+
+/**
+ * @typedef {object} MsgOsmosisSwap
+ * @property {[Routes]} routes The pool routes to execute the swap under.
+ * @property {Coin} tokenIn The token/coin being swapped in.
+ * @property {string} tokenMinOut The minimum amount out of the token being swapped into.
+ */
+
+/**
+ * @typedef {object} Routes
+ * @property {Long} poolId The pool id.
+ * @property {string} tokenOutDenom The token denom to trade out into.
+ */
+
+/**
+ * @typedef {object} Coin
+ * @property {string} denom The coin denom.
+ * @property {string} amount The amount of the denom.
+ */
+
+/**
+ * @typedef {object} MsgJunoswapSwap
+ * @property {string} contract The contract address of the Junoswap contract to swap with.
+ * @property {string} outputMinToken The accounts store object for the Calypso account to perform swap for.
+ * @property {object} msg The protocol msg to run.
+ */
+
+/**
+ * @typedef {object} MsgSecretswapSwap
+ * @property {string} chain The protocol ID to run the swap on.
+ * @property {object} account The accounts store object for the Calypso account to perform swap for.
+ * @property {object} msg The protocol msg to run.
  */

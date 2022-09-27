@@ -5,14 +5,14 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
  * Using the ICA Agoric contract, perform a basic swap on Junoswap
  *
  * @param {Connection} connection
- * @param {MsgSwapExactAmountIn} value
+ * @param {MsgJunoswapSwap} msg
  * @returns {Promise<String>}
  */
- export const junoSwap = async (connection, value) => {
+ export const junoSwap = async (connection, msg) => {
 
     const swapMessagePass = {
         pass_through_swap: {
-            output_min_token: `${minOutputToken}`,
+            output_min_token: msg.outputMinToken,
             input_token,
             input_token_amount: `${tokenAmount}`,
             output_amm_address: outputPool.swap_address,
@@ -25,9 +25,9 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
         msg: toUtf8(JSON.stringify(swapMessagePass)),
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+    const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-    const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+    const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
     const ret = await connection.send(JSON.stringify(packet));
 
@@ -57,9 +57,9 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
         msg: toUtf8(JSON.stringify(swap)),
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+    const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-    const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+    const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
     const ret = await connection.send(JSON.stringify(packet));
 
@@ -88,9 +88,9 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
         msg: toUtf8(JSON.stringify(addLiquidityMessage)),
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+    const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-    const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+    const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
     const ret = await connection.send(JSON.stringify(packet));
 
@@ -119,9 +119,9 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
         msg: toUtf8(JSON.stringify(removeLiquidityMessage)),
     })
 
-    const msg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
+    const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
 
-    const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+    const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
     const ret = await connection.send(JSON.stringify(packet));
 

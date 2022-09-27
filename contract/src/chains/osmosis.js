@@ -1,24 +1,27 @@
 import { MsgSwapExactAmountIn, MsgExitPool, MsgJoinPool } from 'osmojs/types/proto/osmosis/gamm/v1beta1/tx';
+import { parseICAAddress } from '../utils';
 
 /**
  * Using the ICA Agoric contract, perform a swap on Osmosis
  *
  * @param {Connection} connection
- * @param {MsgSwapExactAmountIn} value
+ * @param {MsgOsmosisSwap} msg
  * @returns {Promise<String>}
  */
- export const osmoSwap = async (connection, value) => {
+ export const osmoSwap = async (connection, msg) => {
+
+  const sender = parseICAAddress(connection)
 
   const message = MsgSwapExactAmountIn.fromPartial({
     sender,
-    routes,
-    tokenIn,
-    tokenOutMinAmount
+    routes: msg.routes,
+    tokenIn: msg.tokenIn,
+    tokenOutMinAmount: msg.tokenMinOut
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn", value: MsgSwapExactAmountIn.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 
@@ -40,9 +43,9 @@ import { MsgSwapExactAmountIn, MsgExitPool, MsgJoinPool } from 'osmojs/types/pro
     tokenInMaxs
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgJoinPool", value: MsgJoinPool.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgJoinPool", value: MsgJoinPool.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 
@@ -64,9 +67,9 @@ import { MsgSwapExactAmountIn, MsgExitPool, MsgJoinPool } from 'osmojs/types/pro
     tokenOutMins
   })
 
-  const msg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgExitPool", value: MsgExitPool.encode(message).finish()})
+  const icaMsg = await E(ica.publicFacet).makeMsg({type: "/osmosis.gamm.v1beta1.MsgExitPool", value: MsgExitPool.encode(message).finish()})
 
-  const packet = await E(instance.publicFacet).makeICAPacket([msg]);
+  const packet = await E(instance.publicFacet).makeICAPacket([icaMsg]);
 
   const ret = await connection.send(JSON.stringify(packet));
 
