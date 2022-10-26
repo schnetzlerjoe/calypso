@@ -10,19 +10,19 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
  */
  export const junoSwap = async (connection, msg) => {
 
-    const swapMessagePass = {
-        pass_through_swap: {
-            output_min_token: msg.outputMinToken,
-            input_token,
-            input_token_amount: `${tokenAmount}`,
-            output_amm_address: outputPool.swap_address,
+    const swap = {
+        swap: {
+            // either Token1 or Token2
+            input_token: msg.swapDirection,
+            input_amount: msg.tokenAmount,
+            min_output: msg.minTokenOut,
         },
     }
 
     const message = MsgExecuteContract.fromPartial({
         sender: senderAddress,
         contract: contractAddress,
-        msg: toUtf8(JSON.stringify(swapMessagePass)),
+        msg: toUtf8(JSON.stringify(swap)),
     })
 
     const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})
@@ -38,23 +38,25 @@ import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx'
  * Using the ICA Agoric contract, perform a multi-pool swap on Junoswap
  *
  * @param {Connection} connection
- * @param {MsgSwapExactAmountIn} value
+ * @param {MsgJunoswapSwapMulti} msg
  * @returns {Promise<String>}
  */
- export const junoSwapMulti = async (connection, value) => {
+ export const junoSwapMulti = async (connection, msg) => {
 
-    const swap = {
-        swap: {
-            input_token: swapDirection === 'tokenAtoTokenB' ? 'Token1' : 'Token2',
-            input_amount: `${tokenAmount}`,
-            min_output: `${minToken}`,
+    const swapMessagePass = {
+        pass_through_swap: {
+            // either Token1 or Token2
+            input_token: msg.swapDirection,
+            input_token_amount: msg.tokenAmount,
+            output_min_token: msg.minTokenOut,
+            output_amm_address: msg.outputAmmAddress,
         },
     }
 
     const message = MsgExecuteContract.fromPartial({
         sender: senderAddress,
         contract: contractAddress,
-        msg: toUtf8(JSON.stringify(swap)),
+        msg: toUtf8(JSON.stringify(swapMessagePass)),
     })
 
     const icaMsg = await E(ica.publicFacet).makeMsg({type: "/cosmwasm.wasm.v1.MsgExecuteContract", value: MsgExecuteContract.encode(message).finish()})

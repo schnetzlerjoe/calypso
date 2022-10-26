@@ -108,9 +108,17 @@
 
 /**
  * @typedef {object} MsgJunoswapSwap
- * @property {string} contract The contract address of the Junoswap contract to swap with.
- * @property {string} outputMinToken The accounts store object for the Calypso account to perform swap for.
- * @property {object} msg The protocol msg to run.
+ * @property {string} swapDirection The swap direction of the swap (either Token1 or Token2).
+ * @property {number} tokenAmount The amount of the token in.
+ * @property {number} minTokenOut The minimum amount of the token out.
+ */
+
+/**
+ * @typedef {object} MsgJunoswapSwapMulti
+ * @property {string} swapDirection The swap direction of the swap (either Token1 or Token2).
+ * @property {number} tokenAmount The amount of the token in.
+ * @property {number} minTokenOut The minimum amount of the token out.
+ * @property {string} outputAmmAddress The address of the output AMM to use
  */
 
 /**
