@@ -16,6 +16,7 @@ import {
   makeLoopbackProtocolHandler,
 } from '@agoric/swingset-vat/src/vats/network/index.js';
 import { makePromiseKit } from '@endo/promise-kit';
+import { homedir } from 'os';
 
 const filename = new URL(import.meta.url).pathname;
 const dirname = path.dirname(filename);
@@ -46,7 +47,7 @@ test('Calypso Tests', async (t) => {
   await E(myAddressNameAdmin).default("pegasus", installationP)
 
   // install the interaccounts bundle and start interaccounts instance
-  const icaBundle = await bundleSource(`../interaccounts/contract/src/contract.js`);
+  const icaBundle = await bundleSource(homedir() + `/interaccounts/contract/src/contract.js`);
   const installationIca = await E(zoe).install(icaBundle);
   // set the lookup for ica interaccounts
   await E(myAddressNameAdmin).default("interaccounts", installationIca)

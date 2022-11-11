@@ -95,6 +95,22 @@
  */
 
 /**
+ * @typedef {object} MsgOsmosisAddLP
+ * @property {string} sender The sender of the message. The ICA account.
+ * @property {Number} poolId The pool to liquidity provide into.
+ * @property {string} shareOutAmount The minimum amount out of the LP token to receive.
+ * @property {Coin} tokenInMaxs The tokens in to turn into LP shares.
+ */
+
+/**
+ * @typedef {object} MsgOsmosisExitLP
+ * @property {string} sender The sender of the message. The ICA account.
+ * @property {Number} poolId The pool to liquidity provide into.
+ * @property {string} shareInAmount The LP shares in to exit from.
+ * @property {Coin} tokenOutMins The max tokens out from the LP shares.
+ */
+
+/**
  * @typedef {object} Routes
  * @property {Long} poolId The pool id.
  * @property {string} tokenOutDenom The token denom to trade out into.
