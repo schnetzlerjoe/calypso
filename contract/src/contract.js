@@ -15,8 +15,8 @@ import { startCalypso } from './calypso.js'
  */
 const start = async (zcf) => {
 
-  // Public facet for anyone to call
-  const publicFacet = Far('publicFacet', {
+  // Creator facet for instance creator to call
+  const creatorFacet = Far('creatorFacet', {
     /**
      * Initializes Calypso and then return the Calypso object to interact with the Calypso protocol with.
      * @returns {Promise<CalypsoResponse>}
@@ -24,7 +24,7 @@ const start = async (zcf) => {
     initCalypso: async (/** @type {ZoeService} */ zoe, /** @type {NameAdmin} */ nameHub) => await startCalypso(zoe, nameHub)
   });
   
-  return harden({ publicFacet });
+  return harden({ creatorFacet });
 };
 
 harden(start);

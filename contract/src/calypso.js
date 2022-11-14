@@ -4,41 +4,33 @@ import { defineKind, makeScalarBigMapStore } from '@agoric/vat-data';
 import { agSwap } from './swap';
 import { E } from '@endo/eventual-send';
 
-const createAccountsStore = async (instanceIca, handler) => {
+const createAccountsStore = async (address, instanceIca, handler) => {
 
     const accountRegistry = makeScalarBigMapStore('caccounts');
 
     // Create the store behavior and stores for Calypso accounts
-    const initAccounts = () => ({ accounts: harden([]) })
+    const initAccounts = (address) => ({ account: address, "osmosis": null, "juno": null, "secret": null, "cosmos": null })
     const accountsBehavior = {
         /**
-         * Open a new Calypso account.
+         * Open the Calypso account.
          * 
          * @param {MsgOpenAccount} msg
          * @returns {Promise<Object>}
          */
-        open: async ({state, self}, msg) => {
-            // check to see if a calypso account already exists for this account
-            const found = self.getAccount(msg.account)
-            if (found != null) { throw Error(`Calypso account ${msg.account} already exists`) }
-            // perform add operation
-            let copyData = Object.keys(state.accounts).map((item) => 
-                Object.assign({}, state.accounts[item])
-            )
-            const accountObj = { "osmosis": null, "juno": null, "secret": null, "cosmos": null }
+        open: async ({state}, msg) => {
+            // if the account is not null, it is set
+            if (state.account != msg.account) { throw Error(`Unauthorized access`) }
             // Create a connection object for osmosis
-            accountObj.osmosis = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.osmosis.agoric, msg.osmosis.counterparty)
+            state.osmosis = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.osmosis.agoric, msg.osmosis.counterparty)
             // Create a connection object for juno
-            accountObj.juno = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.juno.agoric, msg.juno.counterparty)
+            state.juno = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.juno.agoric, msg.juno.counterparty)
             // Create a connection object for secret
-            accountObj.secret = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.secret.agoric, msg.secret.counterparty)
+            state.secret = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.secret.agoric, msg.secret.counterparty)
             // Create a connection object for cosmos
-            accountObj.cosmos = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.cosmos.agoric, msg.cosmos.counterparty)
+            state.cosmos = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.cosmos.agoric, msg.cosmos.counterparty)
             // Set the new Calypso account with the connections
-            accountObj["address"] = msg.account
-            const data = [...copyData, accountObj]
-            state.accounts = harden(data)
-            return accountObj
+            state["address"] = msg.account
+            return state
         },
         /**
          * Add a new chain connection to a Calypso account.
@@ -46,37 +38,20 @@ const createAccountsStore = async (instanceIca, handler) => {
          * @param {MsgAddAccount} msg
          * @returns {Promise<String>}
          */
-        add: async ({state, self}, msg) => {
-            // check to see if a calypso account already exists for this account
-            const found = self.getAccount(msg.account)
-            if (found == null) { throw Error(`Calypso account ${msg.account} does not exist`) }
-            // perform logic to add connection
-            let copyData = Object.keys(state.accounts).map((item) => 
-                Object.assign({}, state.accounts[item])
-            )
-            for (let i = 0; i < copyData.length; i++) {
-                if (copyData[i].address == msg.account) {
-                    copyData[i][msg.chainName] = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
-                    state.accounts = harden(copyData)
-                    return copyData[i]
-                }
-            }
-            return null
+        add: async ({state}, msg) => {
+            // check if this account is the instance account
+            if (state.account != msg.account) { throw Error(`Unauthorized access`) }
+            // Create a connection object for new chain
+            state[msg.chainName] = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
+            return state
         },
         // Get the Calypso account by looking up via Agoric address and getting the connections
         // associated with it.
         getAccount: ({state}, agoricAccount) => {
-            for (let i = 0; i < state.accounts.length; i++) {
-                if (state.accounts[i].address == agoricAccount) {
-                    return state.accounts[i]
-                }
-            }
-            return null
-        },
-        // Gets the amount of opened Calypso accounts in the store
-        count: ({state}) => {
-            return state.accounts.length
-        },
+            // ensure accounts match this contracts account
+            if (state.account != agoricAccount) { throw Error(`Unauthorized access`) }
+            return state
+        }
     }
 
     const finishAccount = ({ state, self }) => {
@@ -87,7 +62,7 @@ const createAccountsStore = async (instanceIca, handler) => {
     const makeAccountsStore = defineKind('accounts', initAccounts, accountsBehavior, { finish: finishAccount });
 
     // Initialize the virtual object store
-    const accounts = makeAccountsStore('calypso');
+    const accounts = makeAccountsStore(address);
 
     return accounts
 }
@@ -123,18 +98,9 @@ export const startCalypso = async (zoe, nameAdmin) => {
         }
     });
 
-    const accounts = await createAccountsStore(instanceIca, connectionHandlerICA);
+    const accounts = await createAccountsStore(address, instanceIca, connectionHandlerICA);
 
     return Far('calypso', {
-        /**
-         * Get the number of Calypso accounts.
-         *
-         * @returns {Promise<Number>}
-         */
-         async getCalypsoAccountCount () {
-            const ret = await accounts.count()
-            return ret
-        },
         /**
          * Get the Calypso account and the connection objects for the account using Agoric bech32 address.
          *

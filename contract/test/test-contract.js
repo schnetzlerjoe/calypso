@@ -131,17 +131,9 @@ test('Calypso Tests', async (t) => {
   const account = await E(calypso).openCalypsoAccount(openMsg);
   t.assert(typeof(account) === "object", 'openCalypsoAccount failed: did not return an account object');
 
-  // Run second test to check that we have 1 total accounts open
-  const accountCount = await E(calypso).getCalypsoAccountCount();
-  t.assert(accountCount === 1, 'getCalypsoAccountCount failed: does not equal 1');
-
   // Open up another account
   const account2 = await E(calypso).openCalypsoAccount(openMsg2);
   t.assert(typeof(account2) === "object", 'openCalypsoAccount failed: did not return an account object');
-
-  // Run another test to check that we have 2 total accounts open
-  const accountCount2 = await E(calypso).getCalypsoAccountCount();
-  t.assert(accountCount2 === 2, 'getCalypsoAccountCount failed: does not equal 2');
 
   // Run third test to check that we can get our account
   const calypsoAccount = await E(calypso).getCalypsoAccount(address);
