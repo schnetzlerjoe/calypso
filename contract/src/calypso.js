@@ -6,10 +6,10 @@ import { E } from '@endo/eventual-send';
 
 const createAccountsStore = async (address, instanceIca, handler) => {
 
-    const accountRegistry = makeScalarBigMapStore('caccounts');
+    const accountRegistry = makeScalarBigMapStore('calypso');
 
     // Create the store behavior and stores for Calypso accounts
-    const initAccounts = (address) => ({ account: address, "osmosis": null, "juno": null, "secret": null, "cosmos": null })
+    const initAccounts = (address) => ({ account: address, "osmosis": harden({}), "juno": harden({}), "secret": harden({}), "cosmos": harden({}) })
     const accountsBehavior = {
         /**
          * Open the Calypso account.
@@ -21,32 +21,39 @@ const createAccountsStore = async (address, instanceIca, handler) => {
             // if the account is not null, it is set
             if (state.account != msg.account) { throw Error(`Unauthorized access`) }
             // Create a connection object for osmosis
-            state.osmosis = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.osmosis.agoric, msg.osmosis.counterparty)
+            state.osmosis = harden(await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.osmosis.agoric, msg.osmosis.counterparty))
             // Create a connection object for juno
-            state.juno = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.juno.agoric, msg.juno.counterparty)
+            state.juno = harden(await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.juno.agoric, msg.juno.counterparty))
             // Create a connection object for secret
-            state.secret = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.secret.agoric, msg.secret.counterparty)
+            state.secret = harden(await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.secret.agoric, msg.secret.counterparty))
             // Create a connection object for cosmos
-            state.cosmos = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.cosmos.agoric, msg.cosmos.counterparty)
+            state.cosmos = harden(await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.cosmos.agoric, msg.cosmos.counterparty))
             // Set the new Calypso account with the connections
-            state["address"] = msg.account
+            state.account = harden(msg.account)
             return state
         },
         /**
          * Add a new chain connection to a Calypso account.
          * 
          * @param {MsgAddAccount} msg
-         * @returns {Promise<String>}
+         * @returns {Promise<Object>}
          */
         add: async ({state}, msg) => {
+            let copyState = Object.assign({}, state);
             // check if this account is the instance account
             if (state.account != msg.account) { throw Error(`Unauthorized access`) }
             // Create a connection object for new chain
-            state[msg.chainName] = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
+            copyState.terra = await E(instanceIca.publicFacet).createICAAccount(msg.port, handler, msg.chain.agoric, msg.chain.counterparty)
+            state = copyState
             return state
         },
-        // Get the Calypso account by looking up via Agoric address and getting the connections
-        // associated with it.
+        /**
+         * Get the Calypso account by looking up via Agoric address and getting the connections 
+         * associated with it.
+         * 
+         * @param {String} agoricAccount
+         * @returns {Promise<Object>}
+         */
         getAccount: ({state}, agoricAccount) => {
             // ensure accounts match this contracts account
             if (state.account != agoricAccount) { throw Error(`Unauthorized access`) }
@@ -54,12 +61,12 @@ const createAccountsStore = async (address, instanceIca, handler) => {
         }
     }
 
-    const finishAccount = ({ state, self }) => {
-        accountRegistry.init(state.name, self);
+    const finishAccount = ({ state }) => {
+        accountRegistry.init(state.name);
     };
 
     // Create the virtual object store
-    const makeAccountsStore = defineKind('accounts', initAccounts, accountsBehavior, { finish: finishAccount });
+    const makeAccountsStore = defineKind('calypso', initAccounts, accountsBehavior, { finish: finishAccount });
 
     // Initialize the virtual object store
     const accounts = makeAccountsStore(address);
@@ -98,6 +105,8 @@ export const startCalypso = async (zoe, nameAdmin) => {
         }
     });
 
+    const address = await E(nameAdmin).getMyAddress()
+
     const accounts = await createAccountsStore(address, instanceIca, connectionHandlerICA);
 
     return Far('calypso', {
@@ -115,7 +124,7 @@ export const startCalypso = async (zoe, nameAdmin) => {
          * Open up a Calypso account and create channels/connections for each chain needed for each protocol.
          *
          * @param {MsgOpenAccount} msg
-         * @returns {Promise<String>}
+         * @returns {Promise<Object>}
          */
          async openCalypsoAccount (msg) {
             const ret = await accounts.open(msg)

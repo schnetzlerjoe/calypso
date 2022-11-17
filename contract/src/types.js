@@ -4,7 +4,6 @@
  * @typedef {object} CalypsoResponse
  * @property {() => Promise<Number>} getCalypsoAccountCount
  * @property {(agoricAccount: String) => Promise<Object>} getCalypsoAccount
- * @property {(msg: MsgOpenAccount) => Promise<String>} openCalypsoAccount
  * @property {(msg: MsgAddAccount) => Promise<String>} addConnectionToCalypsoAccount
  * @property {(msg: MsgSwap) => Promise<String>} aggregatedSwap
  * @property {(msg: MsgAddLP) => Promise<String>} aggregatedAddLP
@@ -28,7 +27,7 @@
  */
 
 /**
- * @typedef {object} MsgOpenAccount
+ * @typedef {object} MsgStartCalypso
  * @property {String} account The agoric account in bech32 format.
  * @property {Port} port The port to create the ICA channels on.
  * @property {ConnectionPair} osmosis The Osmosis protocol connection ID.

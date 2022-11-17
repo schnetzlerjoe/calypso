@@ -97,22 +97,13 @@ test('Calypso Tests', async (t) => {
   await terra.addListener(listener);
 
   // Start the instance and grab the public facet
-  const { publicFacet } = await E(zoe).startInstance(installation);
+  const { creatorFacet } = await E(zoe).startInstance(installation);
 
   // init Calypso
-  const calypso = await E(publicFacet).initCalypso(zoe, myAddressNameAdmin);
+  const calypso = await E(creatorFacet).initCalypso(zoe, myAddressNameAdmin);
 
   const openMsg = {
     account: address,
-    port: port,
-    osmosis: {agoric: "connection-1", counterparty: "connection-1"},
-    cosmos: {agoric: "connection-2", counterparty: "connection-2"},
-    juno: {agoric: "connection-3", counterparty: "connection-3"},
-    secret: {agoric: "connection-4", counterparty: "connection-4"},
-  }
-
-  const openMsg2 = {
-    account: address2,
     port: port,
     osmosis: {agoric: "connection-1", counterparty: "connection-1"},
     cosmos: {agoric: "connection-2", counterparty: "connection-2"},
@@ -131,18 +122,14 @@ test('Calypso Tests', async (t) => {
   const account = await E(calypso).openCalypsoAccount(openMsg);
   t.assert(typeof(account) === "object", 'openCalypsoAccount failed: did not return an account object');
 
-  // Open up another account
-  const account2 = await E(calypso).openCalypsoAccount(openMsg2);
-  t.assert(typeof(account2) === "object", 'openCalypsoAccount failed: did not return an account object');
-
-  // Run third test to check that we can get our account
-  const calypsoAccount = await E(calypso).getCalypsoAccount(address);
-  t.assert(calypsoAccount.address === account.address, 'getCalypsoAccount failed: does not equal expected');
-
   // Run test to add a new chain connection to an account
   const calypsoAccount2 = await E(calypso).addConnectionToCalypsoAccount(msgAdd);
-  console.log(calypsoAccount2)
   t.assert(calypsoAccount2.address === account.address, 'getCalypsoAccount failed: does not equal expected');
+
+  // Run test to check that we can get our account
+  const calypsoAccount = await E(calypso).getCalypsoAccount(address);
+  t.assert(calypsoAccount.address === account.address, 'getCalypsoAccount failed: does not equal expected');
+  console.log(calypsoAccount)
 
   closed.promise
 
