@@ -35,12 +35,8 @@ test('Calypso Tests', async (t) => {
   const installation = E(zoe).install(bundle);
 
   // create fake address admin
-  var myAddressNameAdmin = makeFakeMyAddressNameAdmin("1");
+  const  myAddressNameAdmin = await makeFakeMyAddressNameAdmin("1");
   const address = await E(myAddressNameAdmin).getMyAddress()
-
-  // create fake address admin 2
-  var myAddressNameAdmin2 = makeFakeMyAddressNameAdmin("2");
-  const address2 = await E(myAddressNameAdmin2).getMyAddress()
 
   // install the pegasus bundle and start pegasus instance
   const installationP = await E(zoe).install(pegasusBundle);
@@ -99,17 +95,16 @@ test('Calypso Tests', async (t) => {
   // Start the instance and grab the public facet
   const { creatorFacet } = await E(zoe).startInstance(installation);
 
-  // init Calypso
-  const calypso = await E(creatorFacet).initCalypso(zoe, myAddressNameAdmin);
-
   const openMsg = {
-    account: address,
     port: port,
     osmosis: {agoric: "connection-1", counterparty: "connection-1"},
     cosmos: {agoric: "connection-2", counterparty: "connection-2"},
     juno: {agoric: "connection-3", counterparty: "connection-3"},
     secret: {agoric: "connection-4", counterparty: "connection-4"},
   }
+
+  // init Calypso
+  const calypso = await E(creatorFacet).initCalypso(openMsg, zoe, myAddressNameAdmin);
 
   const msgAdd = {
     account: address,
@@ -118,17 +113,19 @@ test('Calypso Tests', async (t) => {
     chain: {agoric: "connection-1", counterparty: "connection-5"},
   }
 
-  // Run first test to check that we can open Calypso account
-  const account = await E(calypso).openCalypsoAccount(openMsg);
-  t.assert(typeof(account) === "object", 'openCalypsoAccount failed: did not return an account object');
-
-  // Run test to add a new chain connection to an account
-  const calypsoAccount2 = await E(calypso).addConnectionToCalypsoAccount(msgAdd);
-  t.assert(calypsoAccount2.address === account.address, 'getCalypsoAccount failed: does not equal expected');
-
   // Run test to check that we can get our account
-  const calypsoAccount = await E(calypso).getCalypsoAccount(address);
-  t.assert(calypsoAccount.address === account.address, 'getCalypsoAccount failed: does not equal expected');
+  var calypsoAccount = await E(calypso).getCalypsoAccount();
+  t.assert(calypsoAccount.address === address, 'getCalypsoAccount failed: does not equal expected');
+
+  // Assert that Terra connection does not exist
+  t.assert(calypsoAccount.terra == undefined, 'Terra connection should not exist yet');
+  // Run test to add a new chain connection to an account
+  await E(calypso).addConnectionToCalypsoAccount(msgAdd);
+  t.assert(calypsoAccount.address === address, 'addConnectionToCalypsoAccount failed: does not equal expected');
+  
+  // Run test to check that we can get our account
+  calypsoAccount = await E(calypso).getCalypsoAccount();
+  t.assert(calypsoAccount.address === address, 'getCalypsoAccount failed: does not equal expected');
   console.log(calypsoAccount)
 
   closed.promise

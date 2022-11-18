@@ -21,7 +21,7 @@ const start = async (zcf) => {
      * Initializes Calypso and then return the Calypso object to interact with the Calypso protocol with.
      * @returns {Promise<CalypsoResponse>}
      */
-    initCalypso: async (/** @type {ZoeService} */ zoe, /** @type {NameAdmin} */ nameHub) => await startCalypso(zoe, nameHub)
+    initCalypso: async (/** @type {MsgOpenAccount} */ msg,/** @type {ZoeService} */ zoe, /** @type {NameAdmin} */ nameHub) => await startCalypso(msg, zoe, nameHub)
   });
   
   return harden({ creatorFacet });
