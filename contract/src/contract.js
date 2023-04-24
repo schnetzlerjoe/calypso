@@ -9,7 +9,7 @@ import { startCalypso } from './calypso.js'
  * This is the Calypso contract that allows for the creation of controller accounts
  * on all chains supported (Axelar + IBC Chains) which are controlled by the users Agoric wallet.
  * They can then interact with these wallets via Calypso aggregated messages to manage their defi portfolios
- * and protocols across 60+ chains.
+ * and protocols across 70+ chains.
  * @type {ContractStartFn}
  * @param {ContractFacet} zcf
  */

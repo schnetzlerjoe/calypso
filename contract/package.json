@@ -26,7 +26,6 @@
   "dependencies": {
     "@agoric/assert": "beta",
     "@agoric/babel-standalone": "^7.17.7",
-    "@agoric/ertp": "beta",
     "@agoric/notifier": "beta",
     "@agoric/store": "beta",
     "@agoric/swingset-vat": "beta",

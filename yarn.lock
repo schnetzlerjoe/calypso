@@ -94,7 +94,7 @@
   dependencies:
     protobufjs "^7.0.0"
 
-"@agoric/ertp@^0.14.2", "@agoric/ertp@beta":
+"@agoric/ertp@^0.14.2":
   version "0.14.2"
   resolved "https://registry.yarnpkg.com/@agoric/ertp/-/ertp-0.14.2.tgz#7c1df4efa402eda4ec8286cf6b659129e5b91aaa"
   integrity sha512-0/6rW5mT952+MmL+9p+wdvtF3GkHMokQ7S0e+qOtzIDhdfM+5Yn7F5PsUMGnRHMyWEeL9MBSfDBUFJ4Z0sELow==
@@ -5034,7 +5034,7 @@ eslint@^7.23.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-"esm@github:agoric-labs/esm#Agoric-built":
+esm@agoric-labs/esm#Agoric-built:
   version "3.2.25"
   resolved "https://codeload.github.com/agoric-labs/esm/tar.gz/3603726ad4636b2f865f463188fcaade6375638e"
 
@@ -8926,7 +8926,7 @@ rollup@^2.47.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
-"rollup@github:endojs/endo#rollup-2.7.1-patch-1":
+rollup@endojs/endo#rollup-2.7.1-patch-1:
   version "2.70.1-endo.1"
   resolved "https://codeload.github.com/endojs/endo/tar.gz/54060e784a4dbe77b6692f17344f4d84a198530d"
   optionalDependencies:
