@@ -52,8 +52,10 @@ agoric deploy ./deploy.js
 * LP Management (Osmosis:AMM, Crescent:AMM)
 * Staking Management in all IBC Chains with ICA
 * Stride for Liquid Staking
+* TX Indexing
 
 ## Future Integrations
+* Quicksilver Liquid Staking
 * Lending Aggregation (Umee, Mars)
 * Stargaze and NFT Aggregation/Management
 * Cross Chain Market Making Protocol (Between Orderbooks)
