@@ -47,22 +47,15 @@ cd ~/calypso/contract
 agoric deploy ./deploy.js
 ```
 
-## App Store dApps At MVP
-* Osmosis - Dex (Swap + LP Management)
-* Juno - Junoswap (Swap + LP Management)
-* Secret - Secretswap (Swap + LP Management)
-* Staking Management in all IBC Chains
+## Integrations At MVP
+* Trading (Osmosis:AMM, Crescent:AMM+Orderbook, Injective:Orderbook, Squid:Multi)
+* LP Management (Osmosis:AMM, Crescent:AMM)
+* Staking Management in all IBC Chains with ICA
+* Stride for Liquid Staking
 
-## Future dApps
-* Decentralized Tx Indexing - View/Manage Your Tx's
-* IBC <-> EVM Bridging + Cross Chain Interaction (Axelar)
-* IBC <-> Solana Bridging + Cross Chain Interaction
+## Future Integrations
+* Lending Aggregation (Umee, Mars)
 * Stargaze and NFT Aggregation/Management
-* Cross Chain Arbitrage - Utilize Calypso supported dex's to provide arb liquidity for price efficiency. Receive Arb returns.
-
-## Future Potential dApps
-* Cosmos Hub?
-* Terra and Terra dApps
-* Akash + Dev Tools for Deploying Web3 Cloud
-* Lending Aggregation
+* Cross Chain Market Making Protocol (Between Orderbooks)
 * Messaging/Inbox
+* OTC?
